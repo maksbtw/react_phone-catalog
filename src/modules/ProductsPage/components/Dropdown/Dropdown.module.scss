@@ -1,0 +1,41 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.dropdown {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  color: $c-secondary;
+
+  @include text-small;
+}
+
+.select {
+  cursor: pointer;
+
+  height: 40px;
+  padding: 0 32px 0 12px;
+  border: 1px solid $c-icons;
+  border-radius: $radius-small;
+
+  font-family: inherit;
+  color: $c-primary;
+
+  appearance: none;
+  background-color: $c-white;
+  background-image: url('@shared/assets/icons/chevron-down-gray.svg');
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px 16px;
+
+  @include text-buttons;
+  @include hover(border-color, $c-primary);
+
+  &:focus-visible {
+    border-color: $c-primary;
+    outline: none;
+  }
+}

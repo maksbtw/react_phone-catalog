@@ -1,0 +1,63 @@
+@use '@shared/styles/variables' as *;
+@use '@shared/styles/mixins' as *;
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+  padding-block: 24px 56px;
+
+  @include content-container;
+
+  @include on-tablet {
+    gap: 64px;
+    padding-block: 32px 64px;
+  }
+
+  @include on-desktop {
+    gap: 80px;
+    padding-block: 56px 80px;
+  }
+}
+
+.hero {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  @include on-tablet {
+    gap: 32px;
+  }
+
+  @include on-desktop {
+    gap: 56px;
+  }
+}
+
+.title {
+  @include h1;
+}
+
+.error {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+
+  padding-block: 40px;
+
+  @include h3;
+}
+
+.reload-button {
+  height: 40px;
+  padding-inline: 32px;
+  border-radius: $radius-small;
+
+  color: $c-white;
+
+  background-color: $c-accent;
+
+  @include text-buttons;
+  @include hover(box-shadow, 0 3px 13px rgba(23, 32, 49, 0.4));
+}
