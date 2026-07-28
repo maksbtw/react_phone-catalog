@@ -36,7 +36,7 @@
   border: 1px solid $c-icons;
   border-radius: $radius-small;
 
-  background-color: $c-white;
+  background-color: $c-surface;
 
   transition:
     color $transition,
@@ -61,7 +61,7 @@
 
 .capacity-selected {
   border-color: $c-primary;
-  color: $c-white;
+  color: $c-on-primary;
   background-color: $c-primary;
 
   &:hover {

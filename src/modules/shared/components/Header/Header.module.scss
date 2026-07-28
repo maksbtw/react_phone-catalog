@@ -6,7 +6,7 @@
   z-index: 10;
   top: 0;
 
-  background-color: $c-white;
+  background-color: $c-surface;
   box-shadow: 0 1px 0 $c-elements;
 }
 
@@ -110,6 +110,33 @@
   margin-left: auto;
 }
 
+// Theme and language live in the bar from tablet up, and inside the burger
+// menu below that — the mobile bar has no room for them.
+.settings {
+  display: none;
+  gap: 8px;
+  align-items: center;
+  padding-right: 8px;
+
+  @include on-tablet {
+    display: flex;
+  }
+
+  @include on-desktop {
+    gap: 16px;
+    padding-right: 16px;
+  }
+}
+
+.menu-settings {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+
+  padding-block: 24px;
+}
+
 .icon-link,
 .menu-button {
   position: relative;
@@ -154,13 +181,13 @@
   min-width: 14px;
   height: 14px;
   padding-inline: 3px;
-  border: 1px solid $c-white;
+  border: 1px solid $c-surface;
   border-radius: $radius-round;
 
   font-size: 9px;
   font-weight: 600;
   line-height: 1;
-  color: $c-white;
+  color: $c-on-accent;
 
   background-color: $c-secondary-accent;
 }
@@ -204,13 +231,15 @@
   inset: $header-height-mobile 0 0;
   transform: translateX(-100%);
 
+  // The burger menu owns the full viewport, so the list has to scroll.
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
   padding-top: 24px;
 
-  background-color: $c-white;
+  background-color: $c-surface;
 
   transition: transform $transition;
 

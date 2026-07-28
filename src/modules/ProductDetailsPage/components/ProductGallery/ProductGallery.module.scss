@@ -39,7 +39,7 @@
   border: 1px solid $c-elements;
   border-radius: $radius-small;
 
-  background-color: $c-white;
+  background-color: $c-surface;
 
   @include hover(border-color, $c-primary);
 
@@ -71,7 +71,7 @@
   padding: 16px;
   border-radius: $radius-small;
 
-  background-color: $c-white;
+  background-color: $c-surface;
 
   img {
     max-width: 100%;

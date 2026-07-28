@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import cn from 'classnames';
+import { useTranslation } from '@shared/context';
 import { chevronRightGrayIcon, homeIcon } from '@shared/assets/icons';
 import styles from './Breadcrumbs.module.scss';
 
@@ -12,28 +14,40 @@ interface Props {
   crumbs: Crumb[];
 }
 
-export const Breadcrumbs: React.FC<Props> = ({ crumbs }) => (
-  <nav aria-label="Breadcrumbs">
-    <ol className={styles.list}>
-      <li className={styles.item}>
-        <Link to="/" className={styles.home} aria-label="Home">
-          <img src={homeIcon} alt="" />
-        </Link>
-      </li>
+export const Breadcrumbs: React.FC<Props> = ({ crumbs }) => {
+  const { t } = useTranslation();
 
-      {crumbs.map(({ title, path }) => (
-        <li key={title} className={styles.item}>
-          <img src={chevronRightGrayIcon} alt="" className={styles.separator} />
-
-          {path ? (
-            <Link to={path} className={styles.link}>
-              {title}
-            </Link>
-          ) : (
-            <span className={styles.current}>{title}</span>
-          )}
+  return (
+    <nav aria-label={t('breadcrumbs.label')}>
+      <ol className={styles.list}>
+        <li className={styles.item}>
+          <Link
+            to="/"
+            className={styles.home}
+            aria-label={t('breadcrumbs.home')}
+          >
+            <img src={homeIcon} alt="" className="icon" />
+          </Link>
         </li>
-      ))}
-    </ol>
-  </nav>
-);
+
+        {crumbs.map(({ title, path }) => (
+          <li key={title} className={styles.item}>
+            <img
+              src={chevronRightGrayIcon}
+              alt=""
+              className={cn('icon-muted', styles.separator)}
+            />
+
+            {path ? (
+              <Link to={path} className={styles.link}>
+                {title}
+              </Link>
+            ) : (
+              <span className={styles.current}>{title}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+};

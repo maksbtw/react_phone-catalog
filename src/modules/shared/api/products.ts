@@ -77,6 +77,7 @@ export const getProductDetails = async (
     details,
     // Card links and favourites are keyed by the products.json id.
     itemId: product?.itemId ?? details.id,
+    card: product ?? null,
     variants: allDetails.filter(
       item => item.namespaceId === details.namespaceId,
     ),

@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { useTranslation } from '@shared/context';
 import { chevronRightIcon } from '@shared/assets/icons';
 import { getVisiblePages } from '../../utils';
 import styles from './Pagination.module.scss';
@@ -14,18 +15,23 @@ export const Pagination: React.FC<Props> = ({
   totalPages,
   onPageChange,
 }) => {
+  const { t } = useTranslation();
   const pages = getVisiblePages(currentPage, totalPages);
 
   return (
-    <nav className={styles.pagination} aria-label="Pagination">
+    <nav className={styles.pagination} aria-label={t('pagination.label')}>
       <button
         type="button"
         className={styles.arrow}
-        aria-label="Previous page"
+        aria-label={t('pagination.prev')}
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
       >
-        <img src={chevronRightIcon} alt="" className={styles.arrowIconPrev} />
+        <img
+          src={chevronRightIcon}
+          alt=""
+          className={cn('icon', styles.arrowIconPrev)}
+        />
       </button>
 
       <ul className={styles.pages}>
@@ -48,11 +54,11 @@ export const Pagination: React.FC<Props> = ({
       <button
         type="button"
         className={styles.arrow}
-        aria-label="Next page"
+        aria-label={t('pagination.next')}
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
       >
-        <img src={chevronRightIcon} alt="" />
+        <img src={chevronRightIcon} alt="" className="icon" />
       </button>
     </nav>
   );

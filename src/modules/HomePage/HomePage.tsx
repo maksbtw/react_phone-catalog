@@ -5,13 +5,16 @@ import {
   getHotPriceProducts,
   getProducts,
 } from '@shared/api';
-import { Loader } from '@shared/components/Loader';
+import { useTranslation } from '@shared/context';
 import { ProductsSlider } from '@shared/components/ProductsSlider';
+import { ProductsListSkeleton } from '@shared/components/ProductsListSkeleton';
 import { PicturesSlider } from './components/PicturesSlider';
 import { ShopByCategory } from './components/ShopByCategory';
 import styles from './HomePage.module.scss';
 
 export const HomePage = () => {
+  const { t } = useTranslation();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -40,26 +43,30 @@ export const HomePage = () => {
 
   return (
     <div className={styles.page}>
-      <h1 className="visually-hidden">Product Catalog</h1>
+      <h1 className="visually-hidden">{t('home.title')}</h1>
 
       <section className={styles.hero}>
-        <h2 className={styles.title}>Welcome to Nice Gadgets store!</h2>
+        <h2 className={styles.title}>{t('home.welcome')}</h2>
 
         <PicturesSlider />
       </section>
 
-      {isLoading && <Loader />}
+      {isLoading && (
+        <div className={styles.skeleton}>
+          <ProductsListSkeleton count={4} />
+        </div>
+      )}
 
       {!isLoading && hasError && (
         <div className={styles.error}>
-          <p>Something went wrong</p>
+          <p>{t('common.somethingWentWrong')}</p>
 
           <button
             type="button"
             className={styles.reloadButton}
             onClick={loadProducts}
           >
-            Reload
+            {t('common.reload')}
           </button>
         </div>
       )}
@@ -67,14 +74,14 @@ export const HomePage = () => {
       {!isLoading && !hasError && (
         <>
           <ProductsSlider
-            title="Brand new models"
+            title={t('home.brandNew')}
             products={brandNewProducts}
           />
 
           <ShopByCategory products={products} />
 
           <ProductsSlider
-            title="Hot prices"
+            title={t('home.hotPrices')}
             products={hotPriceProducts}
             showDiscount
           />

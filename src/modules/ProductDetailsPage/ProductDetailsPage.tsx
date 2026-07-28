@@ -3,15 +3,15 @@ import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import cn from 'classnames';
 import { Product, ProductWithVariants } from '@shared/types';
 import { getProductDetails, getSuggestedProducts } from '@shared/api';
-import { useFavourites } from '@shared/context';
+import { useCart, useFavourites, useTranslation } from '@shared/context';
 import {
   chevronRightGrayIcon,
   favouritesFilledIcon,
   favouritesIcon,
 } from '@shared/assets/icons';
 import { Breadcrumbs } from '@shared/components/Breadcrumbs';
-import { Loader } from '@shared/components/Loader';
 import { ProductsSlider } from '@shared/components/ProductsSlider';
+import { ProductDetailsSkeleton } from './components/ProductDetailsSkeleton';
 import { CapacityPicker } from './components/CapacityPicker';
 import { ColorPicker } from './components/ColorPicker';
 import { ProductGallery } from './components/ProductGallery';
@@ -24,14 +24,15 @@ export const ProductDetailsPage = () => {
   const { productId = '' } = useParams();
   const navigate = useNavigate();
   const navigationType = useNavigationType();
+  const { t } = useTranslation();
 
   const [product, setProduct] = useState<ProductWithVariants | null>(null);
   const [suggestedProducts, setSuggestedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
 
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
   const { isFavourite, toggleFavourite } = useFavourites();
+  const { isInCart, addToCart } = useCart();
 
   const loadProduct = useCallback(() => {
     setIsLoading(true);
@@ -52,8 +53,6 @@ export const ProductDetailsPage = () => {
   }, [productId]);
 
   useEffect(() => {
-    setIsAddedToCart(false);
-
     // Picking another color or capacity replaces the URL — the reader stays
     // where they are. Opening a different product starts at the top.
     if (navigationType !== 'REPLACE') {
@@ -64,7 +63,7 @@ export const ProductDetailsPage = () => {
   if (isLoading) {
     return (
       <div className={styles.page}>
-        <Loader />
+        <ProductDetailsSkeleton />
       </div>
     );
   }
@@ -73,14 +72,14 @@ export const ProductDetailsPage = () => {
     return (
       <div className={styles.page}>
         <div className={styles.message}>
-          <p>Something went wrong</p>
+          <p>{t('common.somethingWentWrong')}</p>
 
           <button
             type="button"
             className={styles.reloadButton}
             onClick={loadProduct}
           >
-            Reload
+            {t('common.reload')}
           </button>
         </div>
       </div>
@@ -90,13 +89,14 @@ export const ProductDetailsPage = () => {
   if (!product) {
     return (
       <div className={styles.page}>
-        <p className={styles.message}>Product was not found</p>
+        <p className={styles.message}>{t('details.notFound')}</p>
       </div>
     );
   }
 
-  const { details, variants, itemId } = product;
+  const { details, variants, itemId, card } = product;
   const isAddedToFavourites = isFavourite(itemId);
+  const isAddedToCart = isInCart(itemId);
   const {
     name,
     images,
@@ -126,15 +126,27 @@ export const ProductDetailsPage = () => {
 
   return (
     <div className={styles.page}>
-      <Breadcrumbs crumbs={[CATEGORY_BREADCRUMBS[category], { title: name }]} />
+      <Breadcrumbs
+        crumbs={[
+          {
+            title: t(CATEGORY_BREADCRUMBS[category].titleKey),
+            path: CATEGORY_BREADCRUMBS[category].path,
+          },
+          { title: name },
+        ]}
+      />
 
       <button
         type="button"
         className={styles.back}
         onClick={() => navigate(-1)}
       >
-        <img src={chevronRightGrayIcon} alt="" className={styles.backIcon} />
-        Back
+        <img
+          src={chevronRightGrayIcon}
+          alt=""
+          className={cn('icon-muted', styles.backIcon)}
+        />
+        {t('common.back')}
       </button>
 
       <h1 className={styles.title}>{name}</h1>
@@ -175,9 +187,10 @@ export const ProductDetailsPage = () => {
               className={cn(styles.addToCart, {
                 [styles.addToCartActive]: isAddedToCart,
               })}
-              onClick={() => setIsAddedToCart(added => !added)}
+              disabled={!card}
+              onClick={() => card && addToCart(card)}
             >
-              {isAddedToCart ? 'Added to cart' : 'Add to cart'}
+              {isAddedToCart ? t('common.addedToCart') : t('common.addToCart')}
             </button>
 
             <button
@@ -185,8 +198,8 @@ export const ProductDetailsPage = () => {
               className={styles.favourite}
               aria-label={
                 isAddedToFavourites
-                  ? 'Remove from favourites'
-                  : 'Add to favourites'
+                  ? t('common.removeFromFavourites')
+                  : t('common.addToFavourites')
               }
               aria-pressed={isAddedToFavourites}
               onClick={() => toggleFavourite(itemId)}
@@ -196,6 +209,7 @@ export const ProductDetailsPage = () => {
                   isAddedToFavourites ? favouritesFilledIcon : favouritesIcon
                 }
                 alt=""
+                className={cn({ icon: !isAddedToFavourites })}
               />
             </button>
           </div>
@@ -206,7 +220,7 @@ export const ProductDetailsPage = () => {
 
       <div className={styles.details}>
         <section className={styles.about}>
-          <h2 className={styles.sectionTitle}>About</h2>
+          <h2 className={styles.sectionTitle}>{t('details.about')}</h2>
 
           {description.map(({ title, text }) => (
             <article key={title} className={styles.aboutBlock}>
@@ -222,7 +236,7 @@ export const ProductDetailsPage = () => {
         </section>
 
         <section className={styles.specs}>
-          <h2 className={styles.sectionTitle}>Tech specs</h2>
+          <h2 className={styles.sectionTitle}>{t('details.techSpecs')}</h2>
 
           <TechSpecs specs={getFullSpecs(details)} />
         </section>
@@ -231,7 +245,7 @@ export const ProductDetailsPage = () => {
       {!!suggestedProducts.length && (
         <div className={styles.suggested}>
           <ProductsSlider
-            title="You may also like"
+            title={t('details.youMayAlsoLike')}
             products={suggestedProducts}
             showDiscount
           />

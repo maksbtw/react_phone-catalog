@@ -1,14 +1,27 @@
-// Colors from the UI Kit (Rounded Style 2)
-$c-accent: #216cff;
-$c-secondary-accent: #f447af;
-$c-primary: #0f0f11;
-$c-secondary: #89939a;
-$c-icons: #b4bdc3;
-$c-elements: #e2e6e9;
-$c-hover-bg: #fafbfc;
-$c-white: #fff;
+// Colors are CSS custom properties so the theme can be switched at runtime.
+// The light and dark palettes themselves live in `App.scss`.
+$c-accent: var(--c-accent);
+$c-secondary-accent: var(--c-secondary-accent);
+$c-primary: var(--c-primary);
+$c-secondary: var(--c-secondary);
+$c-icons: var(--c-icons);
+$c-elements: var(--c-elements);
+
+// The page background.
+$c-hover-bg: var(--c-hover-bg);
+
+// Cards, the header and everything else raised above the page.
+$c-surface: var(--c-surface);
+
+// Text and icons on top of `$c-accent`.
+$c-on-accent: var(--c-on-accent);
+
+// Text on `$c-primary`, which is dark in one theme and light in the other.
+$c-on-primary: var(--c-on-primary);
 $c-green: #27ae60;
 $c-red: #eb5757;
+$shadow-card: var(--shadow-card);
+$shadow-button: var(--shadow-button);
 
 // Breakpoints
 $tablet-min: 640px;

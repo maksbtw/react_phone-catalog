@@ -1,8 +1,7 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import cn from 'classnames';
 import { Product } from '@shared/types';
-import { useFavourites } from '@shared/context';
+import { useCart, useFavourites, useTranslation } from '@shared/context';
 import { favouritesFilledIcon, favouritesIcon } from '@shared/assets/icons';
 import styles from './ProductCard.module.scss';
 
@@ -18,14 +17,16 @@ export const ProductCard: React.FC<Props> = ({
   const { itemId, name, image, price, fullPrice, screen, capacity, ram } =
     product;
 
-  const [isAddedToCart, setIsAddedToCart] = useState(false);
+  const { t } = useTranslation();
   const { isFavourite, toggleFavourite } = useFavourites();
+  const { isInCart, addToCart } = useCart();
   const isAddedToFavourites = isFavourite(itemId);
+  const isAddedToCart = isInCart(itemId);
 
   const specs = [
-    { title: 'Screen', value: screen },
-    { title: 'Capacity', value: capacity },
-    { title: 'RAM', value: ram },
+    { title: t('specs.screen'), value: screen },
+    { title: t('specs.capacity'), value: capacity },
+    { title: t('specs.ram'), value: ram },
   ];
 
   return (
@@ -63,16 +64,18 @@ export const ProductCard: React.FC<Props> = ({
           className={cn(styles.addToCart, {
             [styles.addToCartActive]: isAddedToCart,
           })}
-          onClick={() => setIsAddedToCart(added => !added)}
+          onClick={() => addToCart(product)}
         >
-          {isAddedToCart ? 'Added' : 'Add to cart'}
+          {isAddedToCart ? t('common.addedToCart') : t('common.addToCart')}
         </button>
 
         <button
           type="button"
           className={styles.favourite}
           aria-label={
-            isAddedToFavourites ? 'Remove from favourites' : 'Add to favourites'
+            isAddedToFavourites
+              ? t('common.removeFromFavourites')
+              : t('common.addToFavourites')
           }
           aria-pressed={isAddedToFavourites}
           onClick={() => toggleFavourite(itemId)}
@@ -80,6 +83,7 @@ export const ProductCard: React.FC<Props> = ({
           <img
             src={isAddedToFavourites ? favouritesFilledIcon : favouritesIcon}
             alt=""
+            className={cn({ icon: !isAddedToFavourites })}
           />
         </button>
       </div>

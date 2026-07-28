@@ -32,10 +32,10 @@
   padding-inline: 32px;
   border-radius: $radius-small;
 
-  color: $c-white;
+  color: $c-on-accent;
 
   background-color: $c-accent;
 
   @include text-buttons;
-  @include hover(box-shadow, 0 3px 13px rgba(23, 32, 49, 0.4));
+  @include hover(box-shadow, $shadow-button);
 }

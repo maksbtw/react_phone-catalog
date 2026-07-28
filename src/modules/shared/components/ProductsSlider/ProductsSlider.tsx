@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import cn from 'classnames';
 import { Product } from '@shared/types';
+import { useTranslation } from '@shared/context';
 import { ProductCard } from '@shared/components/ProductCard';
 import { chevronRightIcon } from '@shared/assets/icons';
 import styles from './ProductsSlider.module.scss';
@@ -16,6 +17,7 @@ export const ProductsSlider: React.FC<Props> = ({
   products,
   showDiscount = false,
 }) => {
+  const { t } = useTranslation();
   const listRef = useRef<HTMLUListElement>(null);
   const [canScrollBack, setCanScrollBack] = useState(false);
   const [canScrollForward, setCanScrollForward] = useState(true);
@@ -61,21 +63,25 @@ export const ProductsSlider: React.FC<Props> = ({
           <button
             type="button"
             className={styles.button}
-            aria-label="Previous products"
+            aria-label={t('slider.prevProducts')}
             disabled={!canScrollBack}
             onClick={() => scrollBy(-1)}
           >
-            <img src={chevronRightIcon} alt="" className={styles.iconPrev} />
+            <img
+              src={chevronRightIcon}
+              alt=""
+              className={cn('icon', styles.iconPrev)}
+            />
           </button>
 
           <button
             type="button"
             className={styles.button}
-            aria-label="Next products"
+            aria-label={t('slider.nextProducts')}
             disabled={!canScrollForward}
             onClick={() => scrollBy(1)}
           >
-            <img src={chevronRightIcon} alt="" />
+            <img src={chevronRightIcon} alt="" className="icon" />
           </button>
         </div>
       </div>

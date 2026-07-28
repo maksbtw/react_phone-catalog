@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import cn from 'classnames';
+import { useTranslation } from '@shared/context';
 import styles from './ProductGallery.module.scss';
 
 interface Props {
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export const ProductGallery: React.FC<Props> = ({ images, name }) => {
+  const { t } = useTranslation();
   const [mainImage, setMainImage] = useState(images[0]);
 
   // Switching a color keeps the page mounted, but brings a new set of photos.
@@ -23,7 +25,7 @@ export const ProductGallery: React.FC<Props> = ({ images, name }) => {
               className={cn(styles.thumbnail, {
                 [styles.thumbnailActive]: image === mainImage,
               })}
-              aria-label={`Show photo ${index + 1}`}
+              aria-label={t('details.showPhoto', { index: index + 1 })}
               onClick={() => setMainImage(image)}
             >
               <img src={image} alt="" />

@@ -1,24 +1,31 @@
 import { ProductDetails } from '@shared/types';
+import { TranslationKey } from '@shared/i18n';
 
 export interface Spec {
-  label: string;
+  labelKey: TranslationKey;
   value: string;
 }
 
 export const getShortSpecs = (details: ProductDetails): Spec[] => [
-  { label: 'Screen', value: details.screen },
-  { label: 'Resolution', value: details.resolution },
-  { label: 'Processor', value: details.processor },
-  { label: 'RAM', value: details.ram },
+  { labelKey: 'specs.screen', value: details.screen },
+  { labelKey: 'specs.resolution', value: details.resolution },
+  { labelKey: 'specs.processor', value: details.processor },
+  { labelKey: 'specs.ram', value: details.ram },
 ];
 
 export const getFullSpecs = (details: ProductDetails): Spec[] => {
   const specs = [
     ...getShortSpecs(details),
-    { label: 'Built in memory', value: details.capacity },
-    { label: 'Camera', value: details.camera },
-    { label: 'Zoom', value: details.zoom },
-    { label: 'Cell', value: details.cell.join(', ') },
+    {
+      labelKey: 'specs.builtInMemory' as TranslationKey,
+      value: details.capacity,
+    },
+    { labelKey: 'specs.camera' as TranslationKey, value: details.camera },
+    { labelKey: 'specs.zoom' as TranslationKey, value: details.zoom },
+    {
+      labelKey: 'specs.cell' as TranslationKey,
+      value: details.cell.join(', '),
+    },
   ];
 
   // Accessories have no camera or zoom.

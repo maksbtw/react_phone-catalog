@@ -1,24 +1,26 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import cn from 'classnames';
+import { useTranslation } from '@shared/context';
+import { TranslationKey } from '@shared/i18n';
 import { chevronRightIcon } from '@shared/assets/icons';
 import styles from './PicturesSlider.module.scss';
 
-const SLIDES = [
+const SLIDES: { image: string; link: string; altKey: TranslationKey }[] = [
   {
     image: 'img/banner-phones.png',
     link: '/phones',
-    alt: 'Phones banner',
+    altKey: 'slider.bannerPhones',
   },
   {
     image: 'img/banner-tablets.png',
     link: '/tablets',
-    alt: 'Tablets banner',
+    altKey: 'slider.bannerTablets',
   },
   {
     image: 'img/banner-accessories.png',
     link: '/accessories',
-    alt: 'Accessories banner',
+    altKey: 'slider.bannerAccessories',
   },
 ];
 
@@ -26,6 +28,7 @@ const SLIDE_INTERVAL = 5000;
 
 export const PicturesSlider = () => {
   const [current, setCurrent] = useState(0);
+  const { t } = useTranslation();
 
   const showNext = useCallback(() => {
     setCurrent(index => (index + 1) % SLIDES.length);
@@ -47,10 +50,14 @@ export const PicturesSlider = () => {
         <button
           type="button"
           className={styles.arrow}
-          aria-label="Previous picture"
+          aria-label={t('slider.prevPicture')}
           onClick={showPrev}
         >
-          <img src={chevronRightIcon} alt="" className={styles.arrowIconPrev} />
+          <img
+            src={chevronRightIcon}
+            alt=""
+            className={cn('icon', styles.arrowIconPrev)}
+          />
         </button>
 
         <div className={styles.viewport}>
@@ -58,10 +65,14 @@ export const PicturesSlider = () => {
             className={styles.track}
             style={{ transform: `translateX(-${current * 100}%)` }}
           >
-            {SLIDES.map(({ image, link, alt }) => (
+            {SLIDES.map(({ image, link, altKey }) => (
               <li key={image} className={styles.slide}>
                 <Link to={link} className={styles.slideLink}>
-                  <img src={image} alt={alt} className={styles.slideImage} />
+                  <img
+                    src={image}
+                    alt={t(altKey)}
+                    className={styles.slideImage}
+                  />
                 </Link>
               </li>
             ))}
@@ -71,10 +82,10 @@ export const PicturesSlider = () => {
         <button
           type="button"
           className={styles.arrow}
-          aria-label="Next picture"
+          aria-label={t('slider.nextPicture')}
           onClick={showNext}
         >
-          <img src={chevronRightIcon} alt="" />
+          <img src={chevronRightIcon} alt="" className="icon" />
         </button>
       </div>
 
@@ -83,7 +94,7 @@ export const PicturesSlider = () => {
           <button
             key={slide.image}
             type="button"
-            aria-label={`Show picture ${index + 1}`}
+            aria-label={t('slider.showPicture', { index: index + 1 })}
             className={cn(styles.dot, {
               [styles.dotActive]: index === current,
             })}

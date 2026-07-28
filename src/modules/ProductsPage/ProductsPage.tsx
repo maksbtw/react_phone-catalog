@@ -2,9 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Category, Product } from '@shared/types';
 import { getProductsByCategory } from '@shared/api';
+import { useTranslation } from '@shared/context';
+import { filterProductsByQuery } from '@shared/utils';
 import { Breadcrumbs } from '@shared/components/Breadcrumbs';
-import { Loader } from '@shared/components/Loader';
 import { ProductsList } from '@shared/components/ProductsList';
+import { ProductsListSkeleton } from '@shared/components/ProductsListSkeleton';
 import { Dropdown } from './components/Dropdown';
 import { Pagination } from './components/Pagination';
 import {
@@ -23,7 +25,10 @@ interface Props {
 }
 
 export const ProductsPage: React.FC<Props> = ({ category }) => {
-  const { title, breadcrumb, itemsName } = CATEGORY_INFO[category];
+  const { titleKey, breadcrumbKey, emptyKey, noMatchKey } =
+    CATEGORY_INFO[category];
+
+  const { t, tCount } = useTranslation();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,6 +38,7 @@ export const ProductsPage: React.FC<Props> = ({ category }) => {
   const sortBy = (searchParams.get('sort') as SortBy) || DEFAULT_SORT;
   const perPage = searchParams.get('perPage') || DEFAULT_PER_PAGE;
   const requestedPage = Number(searchParams.get('page')) || 1;
+  const query = searchParams.get('query') || '';
 
   const loadProducts = useCallback(() => {
     setIsLoading(true);
@@ -46,9 +52,15 @@ export const ProductsPage: React.FC<Props> = ({ category }) => {
 
   useEffect(loadProducts, [loadProducts]);
 
+  // Searching narrows the list before it is sorted and cut into pages.
+  const matchingProducts = useMemo(
+    () => filterProductsByQuery(products, query),
+    [products, query],
+  );
+
   const sortedProducts = useMemo(
-    () => sortProducts(products, sortBy),
-    [products, sortBy],
+    () => sortProducts(matchingProducts, sortBy),
+    [matchingProducts, sortBy],
   );
 
   const totalPages =
@@ -102,67 +114,82 @@ export const ProductsPage: React.FC<Props> = ({ category }) => {
 
   return (
     <div className={styles.page}>
-      <Breadcrumbs crumbs={[{ title: breadcrumb }]} />
+      <Breadcrumbs crumbs={[{ title: t(breadcrumbKey) }]} />
 
-      <h1 className={styles.title}>{title}</h1>
+      <h1 className={styles.title}>{t(titleKey)}</h1>
 
-      {isLoading && <Loader />}
+      {isLoading && (
+        <div className={styles.list}>
+          <ProductsListSkeleton />
+        </div>
+      )}
 
       {!isLoading && hasError && (
         <div className={styles.message}>
-          <p>Something went wrong</p>
+          <p>{t('common.somethingWentWrong')}</p>
 
           <button
             type="button"
             className={styles.reloadButton}
             onClick={loadProducts}
           >
-            Reload
+            {t('common.reload')}
           </button>
         </div>
       )}
 
       {!isLoading && !hasError && !products.length && (
-        <p className={styles.message}>{`There are no ${itemsName} yet`}</p>
+        <p className={styles.message}>{t(emptyKey)}</p>
       )}
 
       {!isLoading && !hasError && !!products.length && (
         <>
-          <p className={styles.count}>{`${products.length} models`}</p>
+          <p className={styles.count}>
+            {tCount('models', matchingProducts.length)}
+          </p>
 
           <div className={styles.filters}>
             <Dropdown
-              label="Sort by"
+              label={t('products.sortBy')}
               value={sortBy}
-              options={SORT_OPTIONS}
+              options={SORT_OPTIONS.map(({ value, labelKey }) => ({
+                value,
+                label: t(labelKey),
+              }))}
               onChange={handleSortChange}
               className={styles.sort}
             />
 
             <Dropdown
-              label="Items on page"
+              label={t('products.itemsOnPage')}
               value={perPage}
               options={PER_PAGE_OPTIONS.map(option => ({
                 value: option,
-                label: option === 'all' ? 'All' : option,
+                label: option === 'all' ? t('products.all') : option,
               }))}
               onChange={handlePerPageChange}
               className={styles.perPage}
             />
           </div>
 
-          <div className={styles.list}>
-            <ProductsList products={visibleProducts} />
-          </div>
+          {matchingProducts.length ? (
+            <>
+              <div className={styles.list}>
+                <ProductsList products={visibleProducts} />
+              </div>
 
-          {totalPages > 1 && (
-            <div className={styles.pagination}>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </div>
+              {totalPages > 1 && (
+                <div className={styles.pagination}>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                  />
+                </div>
+              )}
+            </>
+          ) : (
+            <p className={styles.message}>{t(noMatchKey)}</p>
           )}
         </>
       )}

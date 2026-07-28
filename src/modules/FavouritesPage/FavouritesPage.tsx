@@ -1,18 +1,24 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Product } from '@shared/types';
 import { getProducts } from '@shared/api';
-import { useFavourites } from '@shared/context';
+import { useFavourites, useTranslation } from '@shared/context';
+import { filterProductsByQuery } from '@shared/utils';
 import { Breadcrumbs } from '@shared/components/Breadcrumbs';
-import { Loader } from '@shared/components/Loader';
 import { ProductsList } from '@shared/components/ProductsList';
+import { ProductsListSkeleton } from '@shared/components/ProductsListSkeleton';
 import styles from './FavouritesPage.module.scss';
 
 export const FavouritesPage = () => {
   const { favouriteIds } = useFavourites();
+  const { t, tCount } = useTranslation();
+  const [searchParams] = useSearchParams();
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+
+  const query = searchParams.get('query') || '';
 
   const loadProducts = useCallback(() => {
     setIsLoading(true);
@@ -35,43 +41,54 @@ export const FavouritesPage = () => {
     [favouriteIds, products],
   );
 
+  const matchingProducts = useMemo(
+    () => filterProductsByQuery(favouriteProducts, query),
+    [favouriteProducts, query],
+  );
+
   return (
     <div className={styles.page}>
-      <Breadcrumbs crumbs={[{ title: 'Favourites' }]} />
+      <Breadcrumbs crumbs={[{ title: t('favourites.title') }]} />
 
-      <h1 className={styles.title}>Favourites</h1>
+      <h1 className={styles.title}>{t('favourites.title')}</h1>
 
-      {isLoading && <Loader />}
+      {isLoading && (
+        <div className={styles.list}>
+          <ProductsListSkeleton count={4} />
+        </div>
+      )}
 
       {!isLoading && hasError && (
         <div className={styles.message}>
-          <p>Something went wrong</p>
+          <p>{t('common.somethingWentWrong')}</p>
 
           <button
             type="button"
             className={styles.reloadButton}
             onClick={loadProducts}
           >
-            Reload
+            {t('common.reload')}
           </button>
         </div>
       )}
 
       {!isLoading && !hasError && !favouriteProducts.length && (
-        <p className={styles.message}>There are no favourites yet</p>
+        <p className={styles.message}>{t('favourites.empty')}</p>
       )}
 
       {!isLoading && !hasError && !!favouriteProducts.length && (
         <>
           <p className={styles.count}>
-            {favouriteProducts.length === 1
-              ? '1 item'
-              : `${favouriteProducts.length} items`}
+            {tCount('items', matchingProducts.length)}
           </p>
 
-          <div className={styles.list}>
-            <ProductsList products={favouriteProducts} />
-          </div>
+          {matchingProducts.length ? (
+            <div className={styles.list}>
+              <ProductsList products={matchingProducts} />
+            </div>
+          ) : (
+            <p className={styles.message}>{t('products.noMatch.products')}</p>
+          )}
         </>
       )}
     </div>

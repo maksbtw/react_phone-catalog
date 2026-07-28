@@ -69,6 +69,10 @@
 .slide {
   flex: 0 0 100%;
   min-width: 0;
+
+  // Matches the artwork's own background rather than the theme, so the
+  // letterboxing around a narrower banner stays invisible.
+  background-color: #fff;
 }
 
 .slide-image {
@@ -79,8 +83,11 @@
   height: 100%;
   max-height: 400px;
 
-  object-fit: cover;
-  object-position: top;
+  // The banners are not all 1040x400: two of them are product shots in other
+  // ratios, and `cover` cropped their bottoms off. `contain` keeps every
+  // banner whole, and both mismatched shots are on white already, so the
+  // slide background below fills the sides without showing a seam.
+  object-fit: contain;
 
   transition: transform $transition;
 

@@ -1,4 +1,5 @@
 import { Category } from '@shared/types';
+import { TranslationKey } from '@shared/i18n';
 
 // The API stores color names, the UI Kit shows swatches.
 export const COLOR_HEXES: Record<string, string> = {
@@ -28,12 +29,12 @@ export const COLOR_HEXES: Record<string, string> = {
 export const FALLBACK_COLOR_HEX = '#b4bdc3';
 
 interface CategoryBreadcrumb {
-  title: string;
+  titleKey: TranslationKey;
   path: string;
 }
 
 export const CATEGORY_BREADCRUMBS: Record<Category, CategoryBreadcrumb> = {
-  phones: { title: 'Phones', path: '/phones' },
-  tablets: { title: 'Tablets', path: '/tablets' },
-  accessories: { title: 'Accessories', path: '/accessories' },
+  phones: { titleKey: 'nav.phones', path: '/phones' },
+  tablets: { titleKey: 'nav.tablets', path: '/tablets' },
+  accessories: { titleKey: 'nav.accessories', path: '/accessories' },
 };

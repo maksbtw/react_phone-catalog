@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { useTranslation } from '@shared/context';
 import styles from './CapacityPicker.module.scss';
 
 interface Props {
@@ -13,31 +14,35 @@ export const CapacityPicker: React.FC<Props> = ({
   selectedCapacity,
   isCapacityAvailable,
   onSelect,
-}) => (
-  <fieldset className={styles.picker}>
-    <legend className={styles.label}>Select capacity</legend>
+}) => {
+  const { t } = useTranslation();
 
-    <div className={styles.list}>
-      {capacities.map(capacity => (
-        <label
-          key={capacity}
-          className={cn(styles.capacity, {
-            [styles.capacitySelected]: capacity === selectedCapacity,
-          })}
-        >
-          <input
-            type="radio"
-            name="capacity"
-            value={capacity}
-            className="visually-hidden"
-            checked={capacity === selectedCapacity}
-            disabled={!isCapacityAvailable(capacity)}
-            onChange={() => onSelect(capacity)}
-          />
+  return (
+    <fieldset className={styles.picker}>
+      <legend className={styles.label}>{t('details.selectCapacity')}</legend>
 
-          {capacity}
-        </label>
-      ))}
-    </div>
-  </fieldset>
-);
+      <div className={styles.list}>
+        {capacities.map(capacity => (
+          <label
+            key={capacity}
+            className={cn(styles.capacity, {
+              [styles.capacitySelected]: capacity === selectedCapacity,
+            })}
+          >
+            <input
+              type="radio"
+              name="capacity"
+              value={capacity}
+              className="visually-hidden"
+              checked={capacity === selectedCapacity}
+              disabled={!isCapacityAvailable(capacity)}
+              onChange={() => onSelect(capacity)}
+            />
+
+            {capacity}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+};

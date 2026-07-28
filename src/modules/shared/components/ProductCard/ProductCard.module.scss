@@ -9,7 +9,7 @@
   border: 1px solid $c-elements;
   border-radius: $radius-small;
 
-  background-color: $c-white;
+  background-color: $c-surface;
 
   transition: box-shadow $transition;
 
@@ -18,7 +18,7 @@
   }
 
   &:hover {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: $shadow-card;
   }
 }
 
@@ -112,7 +112,7 @@
   height: 40px;
   border-radius: $radius-small;
 
-  color: $c-white;
+  color: $c-on-accent;
 
   background-color: $c-accent;
 
@@ -123,14 +123,14 @@
   @include text-buttons;
 
   &:hover {
-    box-shadow: 0 3px 13px rgba(23, 32, 49, 0.4);
+    box-shadow: $shadow-button;
   }
 }
 
 .add-to-cart-active {
   border: 1px solid $c-elements;
   color: $c-accent;
-  background-color: $c-white;
+  background-color: $c-surface;
 
   &:hover {
     box-shadow: none;
