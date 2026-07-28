@@ -89,7 +89,15 @@ export const ProductDetailsPage = () => {
   if (!product) {
     return (
       <div className={styles.page}>
-        <p className={styles.message}>{t('details.notFound')}</p>
+        <div className={styles.message}>
+          <p>{t('details.notFound')}</p>
+
+          <img
+            src="img/product-not-found.png"
+            alt=""
+            className={styles.messageImage}
+          />
+        </div>
       </div>
     );
   }

@@ -8,17 +8,17 @@ import styles from './PicturesSlider.module.scss';
 
 const SLIDES: { image: string; link: string; altKey: TranslationKey }[] = [
   {
-    image: 'img/banner-phones.png',
+    image: 'img/banner-phones.webp',
     link: '/phones',
     altKey: 'slider.bannerPhones',
   },
   {
-    image: 'img/banner-tablets.png',
+    image: 'img/banner-tablets.webp',
     link: '/tablets',
     altKey: 'slider.bannerTablets',
   },
   {
-    image: 'img/banner-accessories.png',
+    image: 'img/banner-accessories.webp',
     link: '/accessories',
     altKey: 'slider.bannerAccessories',
   },

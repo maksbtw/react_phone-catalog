@@ -252,6 +252,11 @@
   @include h3;
 }
 
+.message-image {
+  width: 100%;
+  max-width: 400px;
+}
+
 .reload-button {
   height: 40px;
   padding-inline: 32px;
