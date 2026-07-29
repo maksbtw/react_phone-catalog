@@ -19,7 +19,7 @@ export const ProductCard: React.FC<Props> = ({
 
   const { t } = useTranslation();
   const { isFavourite, toggleFavourite } = useFavourites();
-  const { isInCart, addToCart } = useCart();
+  const { isInCart, addToCart, removeFromCart } = useCart();
   const isAddedToFavourites = isFavourite(itemId);
   const isAddedToCart = isInCart(itemId);
 
@@ -64,7 +64,10 @@ export const ProductCard: React.FC<Props> = ({
           className={cn(styles.addToCart, {
             [styles.addToCartActive]: isAddedToCart,
           })}
-          onClick={() => addToCart(product)}
+          aria-pressed={isAddedToCart}
+          onClick={() =>
+            isAddedToCart ? removeFromCart(itemId) : addToCart(product)
+          }
         >
           {isAddedToCart ? t('common.addedToCart') : t('common.addToCart')}
         </button>

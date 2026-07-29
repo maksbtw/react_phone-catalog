@@ -48,8 +48,8 @@ export const CartProvider: React.FC<Props> = ({ children }) => {
 
       isInCart: (itemId: string) => items.some(item => item.id === itemId),
 
-      // Adding a product already in the cart does nothing, as the button on
-      // the card switches to `Added to cart`.
+      // Adding a product already in the cart does nothing; the buttons that
+      // call this switch to `Added to cart` and remove it on the next click.
       addToCart: (product: Product) =>
         setItems(current =>
           current.some(item => item.id === product.itemId)

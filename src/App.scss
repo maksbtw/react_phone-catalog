@@ -120,6 +120,10 @@ button {
 
   font-family: inherit;
 
+  // Without this the browser default wins, leaving unstyled buttons dark on
+  // the dark theme's surfaces.
+  color: inherit;
+
   background: none;
 }
 

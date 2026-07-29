@@ -20,29 +20,33 @@ export const Search: React.FC<Props> = ({ placeholder, clearLabel }) => {
   const debouncedValue = useDebounce(value, DEBOUNCE_DELAY);
 
   const previousPath = useRef(pathname);
-  const isFirstRun = useRef(true);
+
+  // Router rebuilds `setSearchParams` whenever the URL changes, so the effect
+  // below reruns after params it knows nothing about move. Remembering the
+  // query it last wrote keeps those reruns from dropping the `page` just set.
+  const appliedQuery = useRef(searchParams.get('query') ?? '');
 
   // A query typed for one category means nothing on the next one.
   useEffect(() => {
     if (previousPath.current !== pathname) {
       previousPath.current = pathname;
+      appliedQuery.current = '';
       setValue('');
     }
   }, [pathname]);
 
   useEffect(() => {
-    // On mount the field already mirrors the URL, and writing it back would
-    // drop the `page` of a shared link.
-    if (isFirstRun.current) {
-      isFirstRun.current = false;
+    const query = debouncedValue.trim();
 
+    if (appliedQuery.current === query) {
       return;
     }
+
+    appliedQuery.current = query;
 
     setSearchParams(
       current => {
         const next = new URLSearchParams(current);
-        const query = debouncedValue.trim();
 
         if (query) {
           next.set('query', query);

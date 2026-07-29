@@ -32,7 +32,7 @@ export const ProductDetailsPage = () => {
   const [hasError, setHasError] = useState(false);
 
   const { isFavourite, toggleFavourite } = useFavourites();
-  const { isInCart, addToCart } = useCart();
+  const { isInCart, addToCart, removeFromCart } = useCart();
 
   const loadProduct = useCallback(() => {
     setIsLoading(true);
@@ -196,7 +196,10 @@ export const ProductDetailsPage = () => {
                 [styles.addToCartActive]: isAddedToCart,
               })}
               disabled={!card}
-              onClick={() => card && addToCart(card)}
+              aria-pressed={isAddedToCart}
+              onClick={() =>
+                isAddedToCart ? removeFromCart(itemId) : card && addToCart(card)
+              }
             >
               {isAddedToCart ? t('common.addedToCart') : t('common.addToCart')}
             </button>
